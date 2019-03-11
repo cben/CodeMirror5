@@ -182,19 +182,25 @@ function findSequence(goal) {
   var input = document.getElementById("select");
   function selectTheme() {
     var theme = input.options[input.selectedIndex].textContent;
+    console.log("selected index:", input.selectedIndex, theme === input.value, "value:", input.value)
     editor.setOption("theme", theme);
+    console.log("editor.display.wrapper.className:", editor.display.wrapper.className)
+    console.log("setting hash:", "#" + encodeURIComponent(theme))
     location.hash = "#" + encodeURIComponent(theme);
   }
   var choice = (location.hash &&
                 decodeURIComponent(location.hash.slice(1))) ||
                (document.location.search &&
                 decodeURIComponent(document.location.search.slice(1)));
+  console.log("choice:", location.hash, document.location.search)
   if (choice) {
     input.value = choice;
     editor.setOption("theme", choice);
+    console.log("editor.display.wrapper.className:", editor.display.wrapper.className)
   }
   CodeMirror.on(window, "hashchange", function() {
     var theme = decodeURIComponent(location.hash.slice(1));
+    console.log("hashchange:", location.hash, 'setting dropdown:', input.value, '->', theme)
     if (theme) { input.value = theme; selectTheme(); }
   });
 </script>
