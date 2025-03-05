@@ -94,3 +94,5 @@ build output:
   git commit --file=build.md
   git tag $newtag
 done
+echo
+echo "DONE.  Use \`git push --tags --dry-run\` with your fork's remote name to see your new tags."
