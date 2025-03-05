@@ -1,6 +1,8 @@
 #!/bin/bash
 
-set -euo pipefail  # "bash strict mode", abort on any errors
+# https://disconnected.systems/blog/another-bash-strict-mode/, not touching IFS
+set -euo pipefail
+trap 's=$?; echo "$0: Status $s on line "$LINENO": $BASH_COMMAND"; exit $s' ERR
 
 cd "$(dirname "$0")"
 
@@ -17,9 +19,10 @@ fi
 # Fetch them both to avoid repeating builds I already pushed.
 git fetch --all --tags
 
-if [ -n "$(git status --porcelain --ignored | grep -v ' build-releases.tmp.sh$')" ]; then
+changes="$(git status --porcelain --ignored | grep -v ' build-releases.tmp.sh$' || true)"
+if [ -n "$changes" ]; then
   echo "ERROR: you have modified/untracked files that would be lost:"
-  git clean -x -d --exclude=build-releases.tmp.sh --dry-run
+  echo "$changes"
   echo "Commit or clean everything, then re-run this script."
   exit 1
 fi
